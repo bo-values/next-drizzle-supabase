@@ -29,9 +29,15 @@ export default function Index() {
 
     useEffect(() => {
         if (!refetch) return
+        (async () => {
+            const data = await getTasks()
+            setTasks(data)
+            setRefetch(false)
+        })()
+    }, [refetch, setTasks])
 
-        // Mock : fetch data
-        const data = [
+    async function getTasks() {
+        return [
             {
                 id: "task-1",
                 label: "Buy groceries"
@@ -45,10 +51,7 @@ export default function Index() {
                 label: "Call the doctor"
             }
         ]
-
-        setTasks(data)
-        setRefetch(false)
-    }, [refetch, setTasks])
+    }
 
     /**
      * refresh all state
