@@ -36,6 +36,10 @@ export default function Index() {
         })()
     }, [refetch, setTasks])
 
+    /**
+     * get tasks
+     * @returns 
+     */
     async function getTasks() {
         return [
             {
