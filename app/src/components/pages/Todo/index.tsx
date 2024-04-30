@@ -41,26 +41,15 @@ export default function Index() {
      * @returns 
      */
     async function getTasks() {
-        return [
-            {
-                id: "task-1",
-                label: "Buy groceries"
-            },
-            {
-                id: "task-2",
-                label: "Finish project report"
-            },
-            {
-                id: "task-3",
-                label: "Call the doctor"
-            }
-        ]
+        const data = await fetch('/api/tasks/get')
+        return data.json()
     }
 
     /**
      * refresh all state
      */
     function refreshAll() {
+        setTasks([])
         setAddText("")
         setUpdateText("")
         setIsUpdateMode(false)
@@ -91,9 +80,14 @@ export default function Index() {
     /**
      * execute "Add" Task
      */
-    function addTask() {
-        console.log(addText)
-        // add process here
+    async function addTask() {
+        const res = await fetch("/api/task/create", {
+            method: "POST",
+            body: JSON.stringify({
+                label: addText
+            }),
+        })
+        const json = await res.json()
         refreshAll()
     }
 
@@ -101,21 +95,34 @@ export default function Index() {
      * execute "Update" Task
      * @param taskId 
      */
-    function updateTask(taskId: string) {
-        console.log({ taskId, updateText })
-        // update process here
+    async function updateTask(taskId: string) {
+        const res = await fetch("/api/task/update", {
+            method: "PUT",
+            body: JSON.stringify({
+                taskId,
+                label: updateText
+            }),
+        })
         setIsUpdateMode(!isUpdateMode)
         setTaskId("")
         setUpdateText("")
+        setRefetch(true)
     }
 
     /**
      * execute "Delete" Task
      * @param taskId 
      */
-    function deleteTask(taskId: string) {
-        console.log(taskId)
-        // delete process here
+    async function deleteTask(taskId: string) {
+        const res = await fetch("/api/task/delete", {
+            method: "DELETE",
+            body: JSON.stringify({
+                taskId
+            }),
+        })
+        setTaskId("")
+        setUpdateText("")
+        setRefetch(true)
     }
 
 
