@@ -3,8 +3,19 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 import { CardContent, Card } from "@/components/ui/card"
-import { ChangeEvent, useEffect, useState } from "react"
-import { Check, PencilLine, Plus, RefreshCcw, Trash } from "lucide-react"
+import { ChangeEvent, useCallback, useEffect, useState } from "react"
+import { Check, PencilLine, Plus, RefreshCcw, Trash, User } from "lucide-react"
+import { oauthWithSignOut } from "@/lib/utils"
+import { useRouter } from "next/navigation"
+import useUser from "@/hooks/useUser"
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
 type Task = {
     /**
@@ -26,6 +37,8 @@ export default function Index() {
     const [isUpdateMode, setIsUpdateMode] = useState(false)
     const [taskId, setTaskId] = useState("")
     const [tasks, setTasks] = useState<Task[]>([])
+    const router = useRouter()
+    const user = useUser()
 
     useEffect(() => {
         if (!refetch) return
@@ -125,13 +138,35 @@ export default function Index() {
         setRefetch(true)
     }
 
+    /**
+     * sign out
+     */
+    const signOut = useCallback(async () => {
+        await oauthWithSignOut()
+        router.push("/")
+    }, [router])
+
 
     return (
         <main className="w-full max-w-2xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
-            <div className="flex justify-start items-center">
-                <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-50">Todo List</h1>
-                <div className="ml-2">
-                    <RefreshCcw className="cursor-pointer" onClick={refreshAll} />
+            <div className="flex justify-between items-center">
+                <div className="flex justify-between items-center">
+                    <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-50">Todo List</h1>
+                    <div className="ml-2">
+                        <RefreshCcw className="cursor-pointer" onClick={refreshAll} />
+                    </div>
+                </div>
+                <div>
+                    <DropdownMenu>
+                        <DropdownMenuTrigger>
+                            <User className="cursor-pointer" />
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent>
+                            <DropdownMenuLabel>{user?.user_metadata.preferred_username}</DropdownMenuLabel>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem onClick={() => signOut()}>Sign Out</DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
                 </div>
             </div>
             <div className="mt-6 space-y-4" >
