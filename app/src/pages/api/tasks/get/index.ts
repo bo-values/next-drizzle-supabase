@@ -1,3 +1,4 @@
+export const runtime = 'edge'
 import { NextApiRequest, NextApiResponse } from 'next';
 import db from "@/db"
 import { SelectTodo, todos } from "@/db/schema"
