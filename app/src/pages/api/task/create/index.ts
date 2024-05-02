@@ -1,4 +1,4 @@
-export const runtime = 'nodejs'
+export const runtime = 'edge'
 import { NextApiRequest, NextApiResponse } from 'next';
 import db from "@/db"
 import { todos } from "@/db/schema"
