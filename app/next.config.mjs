@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    basePath: "/app",
+    basePath: "",
     output: "export",
     images: { unoptimized: true } ,
     // webpack: (config, { webpack }) => {
