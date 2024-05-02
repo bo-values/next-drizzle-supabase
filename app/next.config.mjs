@@ -8,6 +8,9 @@ const nextConfig = {
             resourceRegExp: /^pg-native$|^cloudflare:sockets$/,
             // resourceRegExp: /^pg-native$|^cloudflare:sockets$|^node:stream$/,
         }))
+        config.plugins.push(new webpack.NormalModuleReplacementPlugin(/^node:/, (resource) => {
+            resource.request = resource.request.replace(/^node:/, '');
+          }))
         return config
     },
 }
