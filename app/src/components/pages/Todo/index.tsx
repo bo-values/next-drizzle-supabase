@@ -3,7 +3,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 import { CardContent, Card } from "@/components/ui/card"
-import { ChangeEvent, useCallback, useEffect, useState } from "react"
+import { ChangeEvent, useCallback, useEffect, useMemo, useState } from "react"
 import { Check, PencilLine, Plus, RefreshCcw, Trash, User } from "lucide-react"
 import { oauthWithSignOut } from "@/lib/utils"
 import { useRouter } from "next/navigation"
@@ -40,35 +40,34 @@ export default function Index() {
     const router = useRouter()
     const user = useUser()
 
-    useEffect(() => {
-        if (!refetch) return
-        (async () => {
-            const data = await getTasks()
-            setTasks(data)
-            setRefetch(false)
-        })()
-    }, [refetch, setTasks])
+    const headers = useMemo(() => {
+        const headers = new Headers();
+        headers.append("authorization", user?.id || '');
+        return headers
+    }, [user?.id])
 
     /**
      * get tasks
      * @returns 
      */
-    async function getTasks() {
-        const data = await fetch('/api/tasks/get')
+    const getTasks = useCallback(async () => {
+        const data = await fetch('/api/tasks/get', {
+            headers
+        })
         return data.json()
-    }
+    }, [headers])
 
     /**
      * refresh all state
      */
-    function refreshAll() {
+    const refreshAll = useCallback(() => {
         setTasks([])
         setAddText("")
         setUpdateText("")
         setIsUpdateMode(false)
         setTaskId("")
         setRefetch(true)
-    }
+    }, [])
 
     /**
      * handle Update Mode
@@ -93,24 +92,26 @@ export default function Index() {
     /**
      * execute "Add" Task
      */
-    async function addTask() {
+    const addTask = useCallback(async () => {
         const res = await fetch("/api/task/create", {
             method: "POST",
+            headers,
             body: JSON.stringify({
                 label: addText
             }),
         })
         const json = await res.json()
         refreshAll()
-    }
+    }, [headers, refreshAll, addText])
 
     /**
      * execute "Update" Task
      * @param taskId 
      */
-    async function updateTask(taskId: string) {
+    const updateTask = useCallback(async (taskId: string) => {
         const res = await fetch("/api/task/update", {
             method: "PUT",
+            headers,
             body: JSON.stringify({
                 taskId,
                 label: updateText
@@ -120,15 +121,16 @@ export default function Index() {
         setTaskId("")
         setUpdateText("")
         setRefetch(true)
-    }
+    }, [headers, isUpdateMode, updateText])
 
     /**
      * execute "Delete" Task
      * @param taskId 
      */
-    async function deleteTask(taskId: string) {
+    const deleteTask = useCallback(async (taskId: string) => {
         const res = await fetch("/api/task/delete", {
             method: "DELETE",
+            headers,
             body: JSON.stringify({
                 taskId
             }),
@@ -136,7 +138,7 @@ export default function Index() {
         setTaskId("")
         setUpdateText("")
         setRefetch(true)
-    }
+    }, [headers])
 
     /**
      * sign out
@@ -145,6 +147,17 @@ export default function Index() {
         await oauthWithSignOut()
         router.push("/")
     }, [router])
+
+
+    useEffect(() => {
+        if (!refetch) return
+        if(!user?.id) return
+        (async () => {
+            const data = await getTasks()
+            setTasks(data)
+            setRefetch(false)
+        })()
+    }, [refetch, setTasks, getTasks,user?.id])
 
 
     return (
@@ -172,9 +185,9 @@ export default function Index() {
             <div className="mt-6 space-y-4" >
                 <div className="space-y-1">
                     <Label htmlFor="task">New Task</Label>
-                    <Input id="task" placeholder="Enter a new task" value={addText} onChange={(event) => setAddText(event.target.value)} />
+                    <Input id="task" placeholder="Enter a new task" disabled={!user?.id} value={addText} onChange={(event) => setAddText(event.target.value)} />
                 </div>
-                <Button type="button" onClick={() => addTask()} disabled={addText.length < 1}>
+                <Button type="button" onClick={() => addTask()} disabled={addText.length < 1 || !user?.id}>
                     <Plus className="h-5 w-5" />
                     <span className="ml-2">Add task</span>
                 </Button>
