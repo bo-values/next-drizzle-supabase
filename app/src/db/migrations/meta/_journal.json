@@ -8,6 +8,20 @@
       "when": 1707299561096,
       "tag": "0000_crazy_may_parker",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1714555207105,
+      "tag": "0001_cuddly_vector",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1714556025640,
+      "tag": "0002_nebulous_doctor_faustus",
+      "breakpoints": true
     }
   ]
 }

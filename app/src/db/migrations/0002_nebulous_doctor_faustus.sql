@@ -1,0 +1,1 @@
+ALTER TABLE "todos" ALTER COLUMN "uid" SET DATA TYPE varchar(256);
