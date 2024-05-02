@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     basePath: "",
-    output: "export",
+    // output: "export",
     images: { unoptimized: true } ,
     // webpack: (config, { webpack }) => {
     //     config.plugins.push(new webpack.IgnorePlugin({
