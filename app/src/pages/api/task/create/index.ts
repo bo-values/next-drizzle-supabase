@@ -16,5 +16,5 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         console.log(error)
         throw new Error(error)
     }
-
+    
 };

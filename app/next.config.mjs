@@ -1,11 +1,12 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    basePath: "",
+    // basePath: "",
     // output: "export",
-    images: { unoptimized: true } ,
+    // images: { unoptimized: true },
     // webpack: (config, { webpack }) => {
     //     config.plugins.push(new webpack.IgnorePlugin({
-    //         resourceRegExp: /^pg-native$|^cloudflare:sockets$|^node:stream$/,
+    //         resourceRegExp: /^pg-native$|^cloudflare:sockets$/,
+    //         // resourceRegExp: /^pg-native$|^cloudflare:sockets$|^node:stream$/,
     //     }))
     //     return config
     // },
