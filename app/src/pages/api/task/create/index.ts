@@ -1,5 +1,5 @@
 'use server'
-export const runtime = 'edge'
+// export const runtime = 'edge'
 import { NextApiRequest, NextApiResponse } from 'next';
 import db from "@/db"
 import { todos } from "@/db/schema"
